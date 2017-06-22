@@ -230,10 +230,13 @@ module.exports = function container (get, set, clear) {
     },
     
     getOrder: function (opts, cb) {
+      var args = [].slice.call(arguments)
       var order = orders['~' + opts.order_id]
       var client = authedClient()
       client.order_status(opts.order_id, function (err, body) {
-      if (err) return(err)
+        if (err || typeof data === 'string') {
+          return retry('getQuote', func_args, err)
+        }
         if (!body.id) {
           return cb('Order not found')
         }

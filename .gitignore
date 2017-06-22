@@ -4,6 +4,7 @@
 t.js
 node_modules
 npm-debug.log
+deploy
 db.json
 dump
 conf/secret.json

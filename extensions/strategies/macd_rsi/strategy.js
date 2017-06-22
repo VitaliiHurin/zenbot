@@ -3,8 +3,8 @@ var z = require('zero-fill')
 
 module.exports = function container (get, set, clear) {
   return {
-    name: 'macd',
-    description: 'Buy when (MACD - Signal > 0) and sell when (MACD - Signal < 0).',
+    name: 'macd_rsi',
+    description: 'MACD and RSI combined.',
 
     getOptions: function () {
       this.option('period', 'period length', String, '1h')
@@ -25,7 +25,7 @@ module.exports = function container (get, set, clear) {
         // sync RSI display with oversold RSI periods
         s.options.rsi_periods = s.options.oversold_rsi_periods
         get('lib.rsi')(s, 'oversold_rsi', s.options.oversold_rsi_periods)
-        if (!s.in_preroll && s.period.oversold_rsi <= s.options.oversold_rsi && !s.oversold/* && !s.cancel_down*/) {
+        if (!s.in_preroll && s.period.oversold_rsi <= s.options.oversold_rsi/* && !s.oversold && !s.cancel_down*/) {
           s.oversold = true
           if (s.options.mode !== 'sim' || s.options.verbose) console.log(('\noversold at ' + s.period.oversold_rsi + ' RSI, preparing to buy\n').cyan)
         }
@@ -34,7 +34,7 @@ module.exports = function container (get, set, clear) {
         // sync RSI display with overbought RSI periods
         s.options.rsi_periods = s.options.overbought_rsi_periods
         get('lib.rsi')(s, 'overbought_rsi', s.options.overbought_rsi_periods)
-        if (!s.in_preroll && s.period.overbought_rsi >= s.options.overbought_rsi && !s.overbought) {
+        if (!s.in_preroll && s.period.overbought_rsi >= s.options.overbought_rsi/* && !s.overbought*/) {
           s.overbought = true
           if (s.options.mode === 'sim' && s.options.verbose) console.log(('\noverbought at ' + s.period.overbought_rsi + ' RSI, preparing to sold\n').cyan)
         }
@@ -53,29 +53,26 @@ module.exports = function container (get, set, clear) {
     },
 
     onPeriod: function (s, cb) {
-      if (!s.in_preroll && typeof s.period.oversold_rsi === 'number') {
-        if (s.oversold) {
+      if (!s.in_preroll && 
+        typeof s.period.oversold_rsi === 'number' &&
+        typeof s.period.macd_histogram === 'number' && 
+        typeof s.lookback[0].macd_histogram === 'number'
+      ) {
+        if (s.oversold &&
+          (s.period.macd_histogram - s.options.up_trend_threshold) > 0 &&
+          (s.lookback[0].macd_histogram - s.options.up_trend_threshold) <= 0
+        ) {
           s.oversold = false
           s.trend = 'oversold'
           s.signal = 'buy'
           s.cancel_down = true
-          return cb()
-        }
-      }
-      if (!s.in_preroll && typeof s.period.overbought_rsi === 'number') {
-        if (s.overbought) {
+        } else if (s.overbought &&
+          (s.period.macd_histogram + s.options.down_trend_threshold) < 0 && 
+          (s.lookback[0].macd_histogram + s.options.down_trend_threshold) >= 0
+        ) {
           s.overbought = false
           s.trend = 'overbought'
           s.signal = 'sold'
-          return cb()
-        }
-      }
-
-      if (typeof s.period.macd_histogram === 'number' && typeof s.lookback[0].macd_histogram === 'number') {
-        if ((s.period.macd_histogram - s.options.up_trend_threshold) > 0 && (s.lookback[0].macd_histogram - s.options.up_trend_threshold) <= 0) {
-          s.signal = 'buy';
-        } else if ((s.period.macd_histogram + s.options.down_trend_threshold) < 0 && (s.lookback[0].macd_histogram + s.options.down_trend_threshold) >= 0) {
-          s.signal = 'sell';
         } else {
           s.signal = null;  // hold
         }

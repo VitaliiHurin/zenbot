@@ -50,8 +50,8 @@ module.exports = function container (get, set, clear) {
   var exchange = {
     name: 'gdax',
     historyScan: 'backward',
-    makerFee: 0,
-    takerFee: 0.3,
+    makerFee: 0.1, //0, 
+    takerFee: 0.2, //0.3,
 
     getProducts: function () {
       return require('./products.json')

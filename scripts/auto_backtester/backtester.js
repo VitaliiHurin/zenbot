@@ -21,19 +21,22 @@ let VERSION = 'Zenbot 4.04 Backtester v0.2';
 
 let PARALLEL_LIMIT = require('os').cpus().length;
 
-let TREND_EMA_MIN = 20;
-let TREND_EMA_MAX = 20;
+let TREND_EMA_MIN = 1;
+let TREND_EMA_MAX = 1;
 
-let OVERSOLD_RSI_MIN = 20;
-let OVERSOLD_RSI_MAX = 35;
+let OVERSOLD_RSI_MIN = 20; //20
+let OVERSOLD_RSI_MAX = 20; //35
 
-let OVERSOLD_RSI_PERIODS_MIN = 15;
-let OVERSOLD_RSI_PERIODS_MAX = 25;
+let OVERSOLD_RSI_PERIODS_MIN = 15; //15
+let OVERSOLD_RSI_PERIODS_MAX = 15; //25
 
-let NEUTRAL_RATE_MIN = 10;
-let NEUTRAL_RATE_MAX = 10;
+let MARKUP_PCT_MIN = 1;
+let MARKUP_PCT_MAX = 20;
 
-let NEUTRAL_RATE_AUTO = false
+let NEUTRAL_RATE_MIN = 1;
+let NEUTRAL_RATE_MAX = 5;
+
+let NEUTRAL_RATE_AUTO = true;
 
 let countArr = [];
 
@@ -66,7 +69,7 @@ let objectProduct = obj => {
 
 let runCommand = (strategy, cb) => {
   countArr.push(1);
-  let command = `zenbot sim ${simArgs} --trend_ema=${strategy.trend_ema} --oversold_rsi=${strategy.oversold_rsi} --oversold_rsi_periods=${strategy.oversold_rsi_periods} --neutral_rate=${strategy.neutral_rate}`;
+  let command = `../../zenbot.sh sim ${simArgs} --trend_ema=${strategy.trend_ema} --oversold_rsi=${strategy.oversold_rsi} --oversold_rsi_periods=${strategy.oversold_rsi_periods} --markup_pct=${strategy.markup_pct} --neutral_rate=${strategy.neutral_rate}`;
   console.log(`[ ${countArr.length}/${strategies.length} ] ${command}`);
 
   shell.exec(command, {silent:true, async:true}, (code, stdout, stderr) => {
@@ -110,6 +113,7 @@ let processOutput = output => {
     trendEma:           params.trend_ema,
     oversoldRsi:        params.oversold_rsi,
     oversoldRsiPeriods: params.oversold_rsi_periods,
+    markupPct:          params.markup_pct,
     neutralRate:        params.neutral_rate,
     days:               days,
     period:             params.period,
@@ -123,6 +127,7 @@ let strategies = objectProduct({
   trend_ema: range(TREND_EMA_MIN, TREND_EMA_MAX),
   oversold_rsi: range(OVERSOLD_RSI_MIN, OVERSOLD_RSI_MAX),
   oversold_rsi_periods: range(OVERSOLD_RSI_PERIODS_MIN, OVERSOLD_RSI_PERIODS_MAX),
+  markup_pct: [].concat(range(MARKUP_PCT_MIN, MARKUP_PCT_MAX).map(r => r / 100)),
   neutral_rate: (NEUTRAL_RATE_AUTO ? new Array('auto') : []).concat(range(NEUTRAL_RATE_MIN, NEUTRAL_RATE_MAX).map(r => r / 100))
 });
 

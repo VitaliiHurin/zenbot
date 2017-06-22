@@ -53,8 +53,8 @@ module.exports = function container(get, set, clear) {
   var exchange = {
     name: 'kraken',
     historyScan: 'forward',
-    makerFee: 0.16,
-    takerFee: 0.26,
+    makerFee: 0.1,
+    takerFee: 0.2,
     // The limit for the public API is not documented, 1750 ms between getTrades in backfilling seems to do the trick to omit warning messages.
     backfillRateLimit: 1750,
 
