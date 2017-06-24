@@ -235,7 +235,7 @@ module.exports = function container (get, set, clear) {
       var client = authedClient()
       client.order_status(opts.order_id, function (err, body) {
         if (err || typeof data === 'string') {
-          return retry('getQuote', func_args, err)
+          return retry('getQuote', args, err)
         }
         if (!body.id) {
           return cb('Order not found')
