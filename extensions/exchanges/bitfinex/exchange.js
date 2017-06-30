@@ -33,7 +33,7 @@ module.exports = function container (get, set, clear) {
     }
     setTimeout(function () {
       exchange[method].apply(exchange, args)
-    }, 10000)
+    }, 1000)
   }
   
   function encodeQueryData(data) {
@@ -91,9 +91,13 @@ module.exports = function container (get, set, clear) {
     },
     
     getBalance: function (opts, cb) {
+      var func_args = [].slice.call(arguments)
       var client = authedClient()
       client.wallet_balances(function (err, body) {
-        if (err) return(err)
+        if (err) {
+          console.log('getBalance error: ', err)
+          return retry('getBalance', func_args, err)
+        }
         var balance = {asset: 0, currency: 0}
         var accounts = _(body).filter(function (body) { return body.type === c.bitfinex.wallet }).forEach(function (account) {
           if (account.currency.toUpperCase() === opts.currency) {
