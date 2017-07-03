@@ -76,7 +76,14 @@ module.exports = function container (get, set, clear) {
       var query = encodeQueryData(args)
       var pair = 't' + joinProduct(opts.product_id)
       client.makePublicRequest('trades/' + pair + '/hist?' + query, function (err, body) {
-        if (err) return retry('getTrades', func_args, err)
+        if (err) {
+          console.log('getTrades error: ', err)
+          return retry('getTrades', func_args, err)
+        }
+        if (!Array.isArray(body)) {
+          console.log('getTrades error: body is not array: ', body)
+          return retry('getTrades', func_args, err)
+        }
         var trades = body.map(function(trade) {
           return {
             trade_id: trade.ID,
@@ -118,21 +125,29 @@ module.exports = function container (get, set, clear) {
       var client = publicClient()
       var pair = 't' + joinProduct(opts.product_id)
       client.ticker(pair, function (err, body) {
-        if (err) return retry('getQuote', func_args, err)
+        if (err) {
+          console.log('getQuote error: ', err)
+          return retry('getQuote', func_args, err)
+        }
         cb(null, { bid : String(body.BID), ask : String(body.ASK) })
       })
     },
     
     cancelOrder: function (opts, cb) {
       var client = authedClient()
+      //var func_args = [].slice.call(arguments)
       client.cancel_order(opts.order_id, function (err, body) {
-        if (err) return(err)
+        if (err) {
+          console.log('cancelOrder error: ', err)
+          //return retry('cancelOrder', func_args, err)
+        }
         cb()
       })
     },
     
     buy: function (opts, cb) {
       var client = authedClient()
+      var func_args = [].slice.call(arguments)
       if (opts.order_type === 'maker' && typeof opts.type === 'undefined') {
         opts.type = 'exchange limit'
       }
@@ -176,7 +191,10 @@ module.exports = function container (get, set, clear) {
           reject_reason: 'balance'
           return cb(null, order)
         }
-        if (err) return(err)
+        if (err) {
+          console.log('buy error: ', err)
+          return retry('buy', func_args, err)
+        }  
         orders['~' + body.id] = order
         cb(null, order)
       })
@@ -184,6 +202,7 @@ module.exports = function container (get, set, clear) {
     
     sell: function (opts, cb) {
       var client = authedClient()
+      var func_args = [].slice.call(arguments)
       if (opts.order_type === 'maker' && typeof opts.type === 'undefined') {
         opts.type = 'exchange limit'
       }
@@ -227,7 +246,10 @@ module.exports = function container (get, set, clear) {
           reject_reason: 'balance'
           return cb(null, order)
         }
-        if (err) return(err)
+        if (err) {
+          console.log('buy error: ', err)
+          return retry('buy', func_args, err)
+        }  
         orders['~' + body.id] = order
         cb(null, order)
       })
@@ -239,6 +261,7 @@ module.exports = function container (get, set, clear) {
       var client = authedClient()
       client.order_status(opts.order_id, function (err, body) {
         if (err || typeof data === 'string') {
+          console.log('getQuote error: ', err)
           return retry('getQuote', args, err)
         }
         if (!body.id) {
