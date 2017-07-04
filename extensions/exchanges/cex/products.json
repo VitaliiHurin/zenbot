@@ -1,0 +1,74 @@
+[
+  {
+    "asset": "BTC",
+    "currency": "USD",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "BTC/USD"
+  },
+  {
+    "asset": "BTC",
+    "currency": "EUR",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "BTC/EUR"
+  },
+  {
+    "asset": "BTC",
+    "currency": "GBP",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "BTC/GBP"
+  },
+  {
+    "asset": "GHS",
+    "currency": "BTC",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "GHS/BTC"
+  },
+  {
+    "asset": "BTC",
+    "currency": "RUB",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "BTC/RUB"
+  },
+  {
+    "asset": "ETH",
+    "currency": "BTC",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "ETH/BTC"
+  },
+  {
+    "asset": "ETH",
+    "currency": "USD",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "ETH/USD"
+  },
+  {
+    "asset": "ETH",
+    "currency": "EUR",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "ETH/EUR"
+  },
+  {
+    "asset": "ETH",
+    "currency": "GBP",
+    "min_size": "0.1",
+    "max_size": "1000",
+    "increment": "0.0001",
+    "label": "ETH/GBP"
+  }
+]
