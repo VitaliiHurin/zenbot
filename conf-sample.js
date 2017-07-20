@@ -51,6 +51,13 @@ c.bitfinex.secret = 'YOUR-SECRET'
 // May use 'exchange' or 'trading' wallet balances. However margin trading may not work...read the API documentation.
 c.bitfinex.wallet = 'exchange'
 
+// to enable Bitfinex trading, enter your API credentials:
+c.bitstamp = {}
+c.bitstamp.key = 'YOUR-API-KEY'
+c.bitstamp.secret = 'YOUR-SECRET'
+// A client ID is required on Bitstamp
+c.bitstamp.client_id = 'YOUR-CLIENT-ID'
+
 // to enable QuadrigaCX tranding, enter your API credentials:
 c.quadriga = {}
 c.quadriga.key = 'YOUR-API-KEY';
@@ -82,7 +89,7 @@ c.buy_pct = 99
 // sell with this % of asset balance (WARNING : sim won't work properly if you set this value to 100)
 c.sell_pct = 99
 // ms to adjust non-filled order after
-c.order_adjust_time = 30000
+c.order_adjust_time = 5000
 // avoid selling at a loss below this pct
 c.max_sell_loss_pct = 25
 // ms to poll order status
