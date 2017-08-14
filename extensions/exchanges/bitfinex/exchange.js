@@ -28,10 +28,16 @@ module.exports = function container (get, set, clear) {
   }
   
   function retry (method, args) {
+    if (args.try === 0) {
+      console.log('Too many tries for calling ' + method + ', skipping')
+      return
+    }
+    if (!args.try) args.try = 10
     if (method !== 'getTrades') {
       console.error(('\nBitfinex API is down! unable to call ' + method + ', retrying in 10s').red)
     }
     setTimeout(function () {
+      args.try--
       exchange[method].apply(exchange, args)
     }, 1000)
   }
@@ -50,6 +56,7 @@ module.exports = function container (get, set, clear) {
     historyScan: 'backward',
     makerFee: 0.1,
     takerFee: 0.2,
+    backfillRateLimit: 4000,
     
     getProducts: function () {
       return require('./products.json')
