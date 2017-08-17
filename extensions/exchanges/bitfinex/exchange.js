@@ -28,16 +28,16 @@ module.exports = function container (get, set, clear) {
   }
   
   function retry (method, args) {
-    if (args.try === 0) {
+    if (typeof args[0].try === 'undefined') args[0].try = 10
+    else if (args[0].try === 0) {
       console.log('Too many tries for calling ' + method + ', skipping')
       return
     }
-    if (!args.try) args.try = 10
     if (method !== 'getTrades') {
       console.error(('\nBitfinex API is down! unable to call ' + method + ', retrying in 10s').red)
     }
     setTimeout(function () {
-      args.try--
+      args[0].try--
       exchange[method].apply(exchange, args)
     }, 1000)
   }
