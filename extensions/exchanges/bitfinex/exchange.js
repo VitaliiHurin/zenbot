@@ -27,10 +27,13 @@ module.exports = function container (get, set, clear) {
     return product_id.split('-')[0] + '' + product_id.split('-')[1]
   }
   
-  function retry (method, args) {
+  function retry (method, args, err) {
     if (typeof args[0].try === 'undefined') args[0].try = 10
     else if (args[0].try === 0) {
       console.log('Too many tries for calling ' + method + ', skipping')
+      if (args[0].cb) {
+        return args[0].cb(err);
+      }
       return
     }
     if (method !== 'getTrades') {
